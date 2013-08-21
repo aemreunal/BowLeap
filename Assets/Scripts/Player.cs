@@ -10,6 +10,7 @@ public class Player : MonoBehaviour {
 	
 	public Transform head;
 	public Transform ball;
+	public Transform pointer;
 	public bool useKeyboard = false;
 	
 	private bool ballThrown = false;
@@ -50,6 +51,7 @@ public class Player : MonoBehaviour {
 			ball.parent.DetachChildren();
 			ball.rigidbody.useGravity = true;
 			ball.rigidbody.isKinematic = false;
+			pointer.transform.renderer.enabled = false;
 			ball.rigidbody.AddRelativeForce(0, 0, ballForce, ForceMode.VelocityChange);
 		}
 	}
