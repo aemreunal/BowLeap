@@ -37,14 +37,34 @@ using System.Collections;
 
 public class ScoreStorage : MonoBehaviour {
 	private static readonly int NUM_ROLLS = 21;
+	private static readonly int NUM_PINS = 10;
 	
 	private int currentRoll;
 	private int[] scoreBoard;
+	private bool[] previousPinStates;
 
 	void Start () {
 		DontDestroyOnLoad(this);
 		currentRoll = 0;
 		scoreBoard = new int[NUM_ROLLS];
+		InitiatePinStates();
+	}
+	
+	void InitiatePinStates() {
+		previousPinStates = new bool[NUM_PINS];
+		ResetPinStates();
+	}
+	
+	public void AddScoreToBoard(int score, bool[] pinStates) {
+		scoreBoard[currentRoll] = score;
+		previousPinStates = pinStates;
+		currentRoll++;
+		CheckPinStates();
+		
+		if(currentRoll == NUM_ROLLS) {
+			Debug.Log ("Total score for 21 rolls: " + GetTotalScore());
+			ResetScore();
+		}
 	}
 	
 	public void ResetScore() {
@@ -52,15 +72,31 @@ public class ScoreStorage : MonoBehaviour {
 		for(int i = 0; i < scoreBoard.Length; i++) {
 			scoreBoard[i] = 0;	
 		}
+		Destroy(this);
+		Application.LoadLevel("MainMenu");
 	}
 	
-	public void AddScoreToBoard(int score) {
-		scoreBoard[currentRoll] = score;
-		currentRoll++;
-		if(currentRoll == NUM_ROLLS) {
-			Debug.Log ("Total score for 21 rolls: " + GetTotalScore());
-			ResetScore();
+	public void CheckPinStates() {
+		if(!(currentRoll > 18) && currentRoll % 2 == 0) {
+			ResetPinStates();	
+		} else {
+			foreach(bool pinIsUp in previousPinStates) {
+				if(pinIsUp)	{
+					return;	
+				}
+			}
+			ResetPinStates();
 		}
+	}
+	
+	private void ResetPinStates() {
+		for(int i = 0; i < NUM_PINS; i++) {
+			previousPinStates[i] = true;	
+		}
+	}
+	
+	public bool[] GetPreviousPinStates() {
+		return previousPinStates;	
 	}
 	
 	public int GetTotalScore() {
