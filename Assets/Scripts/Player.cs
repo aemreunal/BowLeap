@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using Leap;
 
@@ -47,7 +48,17 @@ public class Player : MonoBehaviour {
 			ball.rigidbody.useGravity = true;
 			ball.rigidbody.isKinematic = false;
 			pointer.transform.renderer.enabled = false;
-			ball.rigidbody.AddRelativeForce(0, 0, ballForce, ForceMode.VelocityChange);
+			ball.rigidbody.AddRelativeForce(new Vector3(0, 0, ballForce), ForceMode.VelocityChange);
+		}
+		
+		if(Input.GetKeyDown(KeyCode.R)) {
+			try {
+				ScoreController scoreController = (ScoreController) GameObject.Find("ScoreController").GetComponent("ScoreController");
+				scoreController.ResetGame();
+			} catch (Exception e) {
+				Debug.Log("Couldn't retrieve the score controller object!");	
+				Debug.Log(e.StackTrace);
+			}	
 		}
 	}
 }

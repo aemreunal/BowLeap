@@ -48,7 +48,6 @@ public class ScoreController : MonoBehaviour {
 	private bool[] currentPinStates;
 	private bool[] previousPinStates;
 	private Transform[] pins;
-	private int currentScore = 0;
 	private bool levelBegan;
 
 	void Start () {
@@ -105,13 +104,13 @@ public class ScoreController : MonoBehaviour {
 	
 	void Update () {
 		if(levelBegan) {
-			currentScore = 0;
+			scoreBoard[currentRoll] = 0;
 			for(int i = 0; i < NUM_PINS; i++) {
 				if(pins[i] != null) {
 					Transform pin = pins[i];
 					
 					if(pinIsDown(pin.rotation.z, pin.rotation.x, pin.position.z)) {
-						currentScore++;
+						scoreBoard[currentRoll]++;
 						currentPinStates[i] = false;
 					}
 				}
@@ -128,18 +127,17 @@ public class ScoreController : MonoBehaviour {
 	}
 	
 	public void SetScoreText() {
-		scoreText.text = "Total: " + GetTotalScore() +  " - Current Score: " + currentScore;
+		scoreText.text = "Total: " + GetTotalScore() +  " - Current Score: " + scoreBoard[currentRoll];
 	}
 	
 	public void AddScoreToBoard() {
-		scoreBoard[currentRoll] = currentScore;
 		previousPinStates = currentPinStates;
 		currentRoll++;
 		PrintPinStates();
 		CheckPinStates();
 		
 		if(currentRoll >= NUM_ROLLS) {
-			Debug.Log ("Total score for 21 rolls: " + GetTotalScore());
+			Debug.Log ("Total score of the game: " + GetTotalScore());
 			ResetGame();
 		}
 	}
@@ -159,9 +157,16 @@ public class ScoreController : MonoBehaviour {
 	}
 	
 	public void ResetGame() {
+		//StartCoroutine(Wait());
+		System.Threading.Thread.Sleep(2000);
 		Destroy(this);
 		Application.LoadLevel("MainMenu");
 	}
+	
+//	private IEnumerator Wait() {
+//		Debug.Log("Waiting for 4 seconds.");
+//		yield return new WaitForSeconds(4);	
+//	}
 	
 	public int GetTotalScore() {
 		int totalScore = 0;
