@@ -21,11 +21,13 @@ public class ScoreControllerSetUp : MonoBehaviour {
 	private Transform[] pins;
 	
 	void Start() {
-		GetScoreController();
 		AddPinsToArray();
-		SendObjectsToScoreController();
-		scoreController.InitiatePins();
-		scoreController.beginLevel();
+		GetScoreController();
+		if(scoreController != null) {
+			SendObjectsToScoreController();
+			scoreController.InitiatePins();
+			scoreController.beginLevel();
+		}
 	}
 
 	private void GetScoreController() {
