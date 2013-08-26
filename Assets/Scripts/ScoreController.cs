@@ -157,16 +157,9 @@ public class ScoreController : MonoBehaviour {
 	}
 	
 	public void ResetGame() {
-		//StartCoroutine(Wait());
-		System.Threading.Thread.Sleep(2000);
 		Destroy(this);
 		Application.LoadLevel("MainMenu");
 	}
-	
-//	private IEnumerator Wait() {
-//		Debug.Log("Waiting for 4 seconds.");
-//		yield return new WaitForSeconds(4);	
-//	}
 	
 	public int GetTotalScore() {
 		int totalScore = 0;

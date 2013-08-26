@@ -45,6 +45,8 @@ BowLeap.app/
 
 Library/
 
+Plugins/
+
 *.prefs
 
 *.mdb
