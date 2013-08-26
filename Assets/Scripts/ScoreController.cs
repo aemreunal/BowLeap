@@ -92,8 +92,7 @@ public class ScoreController : MonoBehaviour {
 	
 	public void endLevel() {
 		levelBegan = false;
-		AddScoreToBoard();
-		PrintPinStates();	
+		AddScoreToBoard();	
 	}
 	
 	public void InitiatePins() {
@@ -136,23 +135,25 @@ public class ScoreController : MonoBehaviour {
 		scoreBoard[currentRoll] = currentScore;
 		previousPinStates = currentPinStates;
 		currentRoll++;
+		PrintPinStates();
 		CheckPinStates();
 		
-		if(currentRoll == NUM_ROLLS) {
+		if(currentRoll >= NUM_ROLLS) {
 			Debug.Log ("Total score for 21 rolls: " + GetTotalScore());
 			ResetGame();
 		}
 	}
 	
 	public void CheckPinStates() {
-		if(!(currentRoll > 18) && currentRoll % 2 == 0) {
+		if (currentRoll == 20 && (GetScoreForRoll(currentRoll - 1) != 10 || GetScoreForRoll(currentRoll - 1) + GetScoreForRoll(currentRoll) != 10)) {
+			currentRoll = 100;
+		} else if (!(currentRoll > 18) && currentRoll % 2 == 0) {
 			ResetAllPins();	
-		} else {
-			foreach(bool pinIsUp in previousPinStates) {
-				if(pinIsUp)	{
-					return;	
-				}
+		} else if (scoreBoard[currentRoll - 1] == 10) {
+			if (currentRoll < 18) {
+				currentRoll++;
 			}
+			Debug.Log("Strike!");
 			ResetAllPins();
 		}
 	}
@@ -164,11 +165,34 @@ public class ScoreController : MonoBehaviour {
 	
 	public int GetTotalScore() {
 		int totalScore = 0;
-		
-		for(int i = 0; i < scoreBoard.Length; i++) {
-			totalScore += scoreBoard[i];	
+
+		for (int i = 0; i < NUM_ROLLS; i++) {
+			if (GetScoreForRoll(i) == 10 && (i % 2 == 0) && i < 18) {
+				if (GetScoreForRoll(i + 2) != 10) {
+					// Strike at first roll of the frame, get the strike points
+					// and the two proceeding rolls' points as bonus
+					totalScore += GetScoreForRoll(i) + GetScoreForRoll(i + 2) + GetScoreForRoll(i + 3);
+				} else {
+					// Strike at first & second roll of the frame, get the
+					// strike points and the proceeding rolls' points as bonus
+					if (i < 16) {
+						totalScore += GetScoreForRoll(i) + GetScoreForRoll(i + 2) + GetScoreForRoll(i + 4);
+					} else {
+						totalScore += GetScoreForRoll(i) + GetScoreForRoll(i + 2) + GetScoreForRoll(i + 3);
+					}
+				}
+				i++;
+			} else if (GetScoreForRoll(i) != 10 && (i % 2 == 0) && i < 18) {
+				if (GetScoreForRoll(i) + GetScoreForRoll(i + 1) == 10) {
+					totalScore += GetScoreForRoll(i) + GetScoreForRoll(i + 1) + GetScoreForRoll(i + 2);
+				} else {
+					totalScore += GetScoreForRoll(i) + GetScoreForRoll(i + 1);
+				}
+				i++;
+			} else {
+				totalScore += GetScoreForRoll(i);
+			}
 		}
-		
 		return totalScore;
 	}
 	
@@ -180,5 +204,13 @@ public class ScoreController : MonoBehaviour {
 			}
 		}
 		Debug.Log(pins + "are up.");
+	}
+	
+	private int GetScoreForRoll(int roll) {
+		if(roll < NUM_ROLLS) {
+			return scoreBoard[roll];	
+		} else {
+			return 0;
+		}
 	}
 }
