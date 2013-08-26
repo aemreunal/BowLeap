@@ -45,6 +45,8 @@ BowLeap.app/
 
 Library/
 
+Assets/Plugins/
+
 Plugins/
 
 *.prefs
