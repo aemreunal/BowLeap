@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class RestartLevel : MonoBehaviour {
-	public int waitTime = 3;
+	public int waitTime = 4;
 	
 	private bool restartInitiated = false;
 
