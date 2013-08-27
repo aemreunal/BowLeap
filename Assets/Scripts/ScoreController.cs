@@ -127,7 +127,13 @@ public class ScoreController : MonoBehaviour {
 	}
 	
 	public void SetScoreText() {
-		scoreText.text = "Total: " + GetTotalScore() +  " - Current Score: " + scoreBoard[currentRoll];
+		scoreText.text = "Frame: ";
+		if(currentRoll < 18) {
+			scoreText.text += ((currentRoll / 2) + 1) + " - Roll: " + ((currentRoll % 2) + 1);
+		} else {
+			scoreText.text += "10 - Roll: " + (currentRoll - 17);
+		}
+		scoreText.text += "\nTotal: " + GetTotalScore() +  " - Current Roll Score: " + scoreBoard[currentRoll];
 	}
 	
 	public void AddScoreToBoard() {
@@ -143,7 +149,7 @@ public class ScoreController : MonoBehaviour {
 	}
 	
 	public void CheckPinStates() {
-		if (currentRoll == 20 && (GetScoreForRoll(currentRoll - 1) != 10 || GetScoreForRoll(currentRoll - 1) + GetScoreForRoll(currentRoll) != 10)) {
+		if (currentRoll == 20 && (GetScoreForRoll(currentRoll - 2) + GetScoreForRoll(currentRoll - 1)) < 10) {
 			currentRoll = 100;
 		} else if (!(currentRoll > 18) && currentRoll % 2 == 0) {
 			ResetAllPins();	
